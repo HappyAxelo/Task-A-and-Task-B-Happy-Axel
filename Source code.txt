@@ -1,0 +1,129 @@
+from tkinter import *
+from tkinter import filedialog
+import os
+from datetime import datetime
+
+def save_draft():
+    task_name = en0.get()
+    start_date = en3.get()
+    end_date = en4.get()
+    assignee = vars.get()
+    project = cv.get()
+    description = en7.get()
+    priority = priority_var.get()
+    # Here you can save the data to a database or file
+    print("Draft saved.")
+
+
+def submit():
+    task_name = en0.get()
+    start_date = en3.get()
+    end_date = en4.get()
+    assignee = vars.get()
+    project = cv.get()
+    description = en7.get()
+    priority = priority_var.get()
+
+    # Create a folder on the desktop if it doesn't exist
+    folder_path = os.path.join(os.path.expanduser("~"), "Desktop", "Submitting A&B tasks data")
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)
+
+    # Generate a unique filename with timestamp
+    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+    file_name = f"task_data_{timestamp}.txt"
+
+    # Define the file path
+    file_path = os.path.join(folder_path, file_name)
+
+    # Write the data to the file
+    with open(file_path, "w") as file:
+        file.write(f"Task Name: {task_name}\n")
+        file.write(f"Start Date: {start_date}\n")
+        file.write(f"End Date: {end_date}\n")
+        file.write(f"Assignee: {assignee}\n")
+        file.write(f"Project: {project}\n")
+        file.write(f"Description: {description}\n")
+        file.write(f"Priority: {priority}\n")
+
+    print("Data submitted.")
+    clear_entries()  # Clear all entry fields
+
+
+def clear_entries():
+    en0.delete(0, END)
+    en3.delete(0, END)
+    en4.delete(0, END)
+    en7.delete(0, END)
+    vars.set(0)
+    cv.set("Project 1")
+    priority_var.set(0)
+
+
+def attach_file():
+    file_path = filedialog.askopenfilename()
+    if file_path:
+        print("Attached file:", file_path)
+        # Here you can process the attached file
+
+
+base = Tk()
+base.geometry("500x500")
+
+lb1 = Label(base, text="Create Task", width=10, font=("arial", 12))
+lb1.place(x=5, y=20)
+
+Button(base, text="Save draft", width=10, bg="white", command=save_draft).place(x=300, y=20)
+
+lb0 = Label(base, text="Name", width=10, font=("arial", 10))
+lb0.place(x=5, y=45)
+en0 = Entry(base)
+en0.place(x=5, y=65)
+
+lb3 = Label(base, text="Start Date", width=10, font=("arial", 10))
+lb3.place(x=5, y=95)
+en3 = Entry(base)
+en3.place(x=5, y=125)
+
+lb4 = Label(base, text="End Date", width=10, font=("arial", 10))
+lb4.place(x=200, y=95)
+en4 = Entry(base)
+en4.place(x=200, y=125)
+
+lb5 = Label(base, text="Assignee", width=15, font=("arial", 12))
+lb5.place(x=5, y=150)
+vars = IntVar()
+Radiobutton(base, text="Vital Gatera", padx=5, variable=vars, value=1).place(x=5, y=190)
+Radiobutton(base, text="Charles Ngabo", padx=10, variable=vars, value=2).place(x=120, y=190)
+Radiobutton(base, text="+", padx=15, variable=vars, value=3).place(x=250, y=190)
+
+lb6 = Label(base, text="Add collaborators", width=15, font=("arial", 12))
+lb6.place(x=5, y=230)
+
+list_of_project = ("Project 1", "Project 2", "Project 3", "Project 4")
+cv = StringVar()
+drplist = OptionMenu(base, cv, *list_of_project)
+drplist.config(width=15)
+cv.set("Project 1")
+lb2 = Label(base, text="Projects", width=10, font=("arial", 10))
+lb2.place(x=5, y=260)
+drplist.place(x=5, y=290)
+
+lb7 = Label(base, text="Description", width=10, font=("arial", 10))
+lb7.place(x=5, y=320)
+en7 = Entry(base)
+en7.place(x=5, y=340)
+
+lb8 = Label(base, text="Priority", width=10, font=("arial", 10))
+lb8.place(x=5, y=380)
+priority_var = IntVar()
+Radiobutton(base, text="Low", padx=5, variable=priority_var, value=1).place(x=5, y=410)
+Radiobutton(base, text="Normal", padx=10, variable=priority_var, value=2).place(x=120, y=410)
+Radiobutton(base, text="High", padx=15, variable=priority_var, value=3).place(x=250, y=410)
+
+Button(base, text="Attach", width=10, bg="white", command=attach_file).place(x=5, y=430)
+
+Button(base, text="Cancel", width=10).place(x=150, y=460)
+Button(base, text="Submit", width=10, bg="blue", fg="black", command=submit).place(x=300, y=460)
+
+base.mainloop()
